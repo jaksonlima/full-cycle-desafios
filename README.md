@@ -12,5 +12,5 @@ _&nbsp;_
 
 ### 🌎📌 Acessar 
 ```
-http://localhost
+http://localhost:8080
 ```
