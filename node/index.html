@@ -1,0 +1,280 @@
+<html>
+
+<head>
+    <title>FullCycle</title>
+    <meta charset="utf-8" />
+
+    <style>
+        .container {
+            display: flex;
+        }
+
+        #carrinho {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            font-size: 1.5rem;
+            text-align: center;
+            border-radius: 10px;
+            border-left: 10px solid rgba(126, 84, 222, 1);
+        }
+
+        #produtos {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            font-size: 1.5rem;
+            text-align: center;
+            border-radius: 10px;
+            border-left: 10px solid rgb(4, 211, 97);
+        }
+
+        .produto-cartao {
+            position: relative;
+            display: flex;
+            max-width: 500px;
+            width: 100%;
+            padding: 10px;
+            margin: 35px;
+            border-radius: 10px;
+            border-left: 8px solid rgb(0, 153, 255);
+            transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .divider {
+            display: flex;
+            flex-direction: column;
+            margin-left: 16px;
+        }
+
+        .divider h2 {
+            font-size: 2rem;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: 700;
+            line-height: 1;
+            margin-top: 0;
+        }
+
+        .divider a {
+            text-decoration: none;
+            text-transform: capitalize;
+            font-size: 1.4rem;
+            cursor: pointer;
+            font-weight: bold;
+            color: rgba(126, 84, 222, 1);
+        }
+
+        .image {
+            width: 150px;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin: 5px;
+        }
+
+        .crescer {
+            transition: all .4s ease-in-out;
+        }
+
+        .crescer:hover {
+            transform: scale(1.1);
+        }
+
+        .sombra-no-centro {
+            animation: sombra-no-centro 0.4s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+        }
+
+        @keyframes sombra-no-centro {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 20px 0px rgba(0, 0, 0, 0.35);
+            }
+        }
+
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+
+        .button {
+            margin-left: 100px;
+            max-width: 190px;
+            width: 100%;
+            height: 50px;
+            border-radius: 25px;
+            color: #28b950;
+            border: 1px solid #1f6f30;
+            background-color: #28b95138;
+            font-weight: bold;
+        }
+
+        .texto {
+            font-weight: bold;
+            font-size: 3rem;
+        }
+
+        .clycle {
+            color: #f9c801;
+        }
+
+        .full {
+            color: #797979;
+        }
+
+        .h2 {
+            font-size: 1.5rem !important;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+        }
+
+        .excluir {
+            position: absolute;
+            top: 8px;
+            right: 23px;
+        }
+
+        .excluir:hover {
+            filter: grayscale(20);
+        }
+
+        .item-excluir {
+            width: 4px;
+            height: 22px;
+            position: absolute;
+            top: 0;
+            background-color: rgb(248, 58, 0);
+            border-radius: 2px;
+        }
+
+        .x {
+            transform: rotate(219deg);
+        }
+
+        .y {
+            transform: rotate(139deg);
+        }
+    </style>
+
+</head>
+
+<body>
+    <div>
+        <header class="header">
+            <h1 class="texto full">Full </h1>
+            <h1 class="texto clycle">Cycle</h1>
+            <button class="button crescer sombra-no-centro" onclick="insert()">Adicionar Produto Base</button>
+        </header>
+        <div class="container">
+            <!--produtos-->
+            <div id="produtos">
+                <h1>Produtos</h1>
+            </div>
+
+
+            <!--carrinho-->
+            <div id="carrinho">
+                <h1>Carinho</h1>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const CLASE_CARRINHO = 'carrinho'
+        const CLASE_PRODUTOS = 'produtos'
+        const BASE_URL = 'http://localhost'
+
+        adicionarEventoNoLink = (funcaoDeEvento, identificador, mensagem, cor) => {
+            const elementoHTML = document.querySelectorAll(`.${identificador}`);
+
+            elementoHTML[0].innerText = mensagem
+            elementoHTML[0].style.color = cor;
+
+            elementoHTML[0].addEventListener('click', () => {
+                funcaoDeEvento(identificador)
+            })
+        }
+
+        adicionarNoCarinho = (identificador) => {
+            const cartaoProduto = document.getElementById(identificador)
+
+            const carrinho = document.getElementById(CLASE_CARRINHO);
+            carrinho.appendChild(cartaoProduto)
+
+            adicionarEventoNoLink(adicionarNosProdutos, identificador, 'Adicionar Produto', 'rgb(4, 211, 97)')
+        }
+
+        adicionarNosProdutos = (identificador) => {
+            const cartaoProduto = document.getElementById(identificador)
+            const produto = document.getElementById(CLASE_PRODUTOS);
+            produto.appendChild(cartaoProduto)
+
+            adicionarEventoNoLink(adicionarNoCarinho, identificador, 'Adicionar Carrinho', 'rgba(126, 84, 222, 1)')
+        }
+
+        inicializarLoja = async () => {
+            const produtoHTML = document.getElementById(CLASE_PRODUTOS);
+
+            const data = await findAll()
+
+            data?.forEach(({ img, value, id }) => {
+                const identificador = `beleza-${id}`
+
+                produtoHTML.innerHTML += `
+                <div id='${identificador}' class="produto-cartao sombra-no-centro crescer">
+                   <img class="image" src='${img}'>
+                   <div class="divider">
+                      <h2 class="h2">${value}</h2>
+                      <a class='${identificador}' onclick="adicionarNoCarinho('${identificador}')">Adicionar Carrinho<a/>
+                    </div>
+                    <div class="excluir sombra-no-centro crescer" onclick="excluir('${id}')">
+                        <div class="item-excluir x">
+                        </div>
+                        <div class="item-excluir y">
+                        </div>
+                    </div>
+                </div>
+                `
+            })
+        }
+
+        inicializarLoja();
+
+        function realod() {
+            window.location.reload();
+        }
+
+        async function insert() {
+            await fetch(`${BASE_URL}/registers`, {
+                method: 'POST'
+            })
+
+
+        }
+
+        async function findAll() {
+            const response = await fetch(`${BASE_URL}/findall`, {
+                method: 'GET'
+            })
+
+            const data = await response.json()
+
+            return data.map(item => ({ ...item, img: 'https://source.unsplash.com/random' }))
+        }
+
+        async function excluir(id) {
+            await fetch(`${BASE_URL}/registers/${id}`, {
+                method: 'DELETE'
+            })
+
+            window.location.reload();
+        }
+    </script>
+</body>
+
+</html>

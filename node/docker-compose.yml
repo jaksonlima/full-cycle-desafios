@@ -1,0 +1,36 @@
+version: '3'
+services:
+
+   express-node:
+     build:
+       context: ./
+     container_name: express-node
+     image: fullcycli-desafio-node
+     volumes:
+       - ./:/app
+     networks:
+       - node-network
+     tty: true  
+     ports:
+       - "3000:3000"
+     depends_on:
+       - mysql  
+
+   mysql:
+     image: mysql:5.7
+     command: --innodb-use-native-aio=0
+     container_name: db-mysql
+     restart: always
+     tty: true
+     volumes: 
+       - ./mysql:/var/lib/mysql
+     environment:
+       - MYSQL_DATABASE=nodedb
+       - MYSQL_ROOT_PASSWORD=root
+     networks:
+       - node-network
+
+networks:
+  node-network:
+    driver: bridge       
+
