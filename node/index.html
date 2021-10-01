@@ -184,7 +184,7 @@
         </div>
     </div>
 
-    <script>
+    <script type="text/javascript">
         const CLASE_CARRINHO = 'carrinho'
         const CLASE_PRODUTOS = 'produtos'
         const BASE_URL = 'http://localhost'
@@ -232,7 +232,7 @@
                       <h2 class="h2">${value}</h2>
                       <a class='${identificador}' onclick="adicionarNoCarinho('${identificador}')">Adicionar Carrinho<a/>
                     </div>
-                    <div class="excluir sombra-no-centro crescer" onclick="excluir('${id}')">
+                    <div class="excluir sombra-no-centro crescer" onclick="exclude('${id}')">
                         <div class="item-excluir x">
                         </div>
                         <div class="item-excluir y">
@@ -245,16 +245,14 @@
 
         inicializarLoja();
 
-        function realod() {
-            window.location.reload();
-        }
+        const reload = () => window.location.reload();
 
         async function insert() {
             await fetch(`${BASE_URL}/registers`, {
                 method: 'POST'
             })
 
-
+            reload()
         }
 
         async function findAll() {
@@ -267,12 +265,12 @@
             return data.map(item => ({ ...item, img: 'https://source.unsplash.com/random' }))
         }
 
-        async function excluir(id) {
+        async function exclude(id) {
             await fetch(`${BASE_URL}/registers/${id}`, {
                 method: 'DELETE'
             })
 
-            window.location.reload();
+            reload()
         }
     </script>
 </body>
